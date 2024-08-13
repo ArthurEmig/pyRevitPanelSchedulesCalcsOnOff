@@ -2,17 +2,12 @@ from pyrevit import script, forms
 from pyrevit import revit, DB, UI
 from pyrevit import HOST_APP, EXEC_PARAMS
 import Autodesk.Revit.DB as db
-import qa_engine
-import filemgr
-from qa_report import print_reports
 import clr
 clr.AddReference('System.Windows.Forms')
 clr.AddReference('IronPython.wpf')
 import sys
 
-
-
-from System.Windows.Controls import ComboBox, ComboBoxItem  # Import ComboBoxItem
+from System.Windows.Controls import ComboBox, ComboBoxItem
 
 xamlfile_family_selection = script.get_bundle_file('SelectMEPFamilyType.xaml')
 
@@ -42,10 +37,12 @@ class FamilySelectionWindow(Windows.Window):
         wpf.LoadComponent(self, xamlfile_family_selection)
         self.selected_value_first = None
         self.selected_value_second = None
+        self.reversed_panel_schedule_template_dict = {}
 
     def btn_ok_clicked(self, sender, e):
         self.Close()
-        ParameterPairsSelectionWindow(self.selected_value).ShowDialog()
+        self.changePanelScheduleTemplate()
+        # ParameterPairsSelectionWindow(self.selected_value).ShowDialog()
 
     def populate_combo_box_family_types(self, doc):
         all_MEP_family_types = filtered_collector.OfClass(db.FamilySymbol).ToElements()
@@ -59,7 +56,7 @@ class FamilySelectionWindow(Windows.Window):
 
         all_panel_schedule_templates = DB.FilteredElementCollector(doc).WherePasses(elem_class_filter_panel_schedule_templates).ToElements()
         # all_panel_schedule_views = filtered_collector.OfClass(db.Electrical.PanelScheduleView)
-        print(all_panel_schedule_views)
+        # print(all_panel_schedule_views)
 
         # initilaize list of panel schedule templates list
 
@@ -75,6 +72,9 @@ class FamilySelectionWindow(Windows.Window):
 
         panel_schedule_template_dict = {key:value for (key, value) in [(templ.Id, templ.Name) for templ in all_panel_schedule_templates if templ.IsBranchPanelSchedule]}
 
+        self.reversed_panel_schedule_template_dict = {value:key for (key, value) in panel_schedule_template_dict.items()}
+
+        print("REVERSED DICT:", self.reversed_panel_schedule_template_dict)
 
         quantity_MEP_Elements = len(all_MEP_family_types)
 
@@ -108,6 +108,46 @@ class FamilySelectionWindow(Windows.Window):
             # print(self.selected_value)
         else:
             print("No Item Selected")
+
+    def changePanelScheduleTemplate(self):
+
+        # select all views of the selected PanelScheduleTemplate
+        elem_class_filter_panel_schedule_views = db.ElementClassFilter(db.Electrical.PanelScheduleView)
+        all_panel_schedule_views = DB.FilteredElementCollector(doc).WherePasses(elem_class_filter_panel_schedule_views).ToElements()
+        panel_schedule_views_list_of_template_1 = []
+        panel_schedule_views_list_of_template_2 = []
+
+        if True:
+
+            t = DB.Transaction(doc, "ChangePanelScheduleTemplatesLoadCalcsShowHide")
+            t.Start()
+
+            closed = False
+
+            try: 
+
+                for schedule_view in all_panel_schedule_views:
+                    template_of_schedule_view = doc.GetElement(schedule_view.GetTemplate())
+                    if template_of_schedule_view.Name == self.selected_value_first:
+                        panel_schedule_views_list_of_template_1.append(template_of_schedule_view)
+                        schedule_view.GenerateInstanceFromTemplate(self.reversed_panel_schedule_template_dict[self.selected_value_second])
+                        continue
+                    if template_of_schedule_view.Name == self.selected_value_second:
+                        panel_schedule_views_list_of_template_2.append(template_of_schedule_view)
+                        schedule_view.GenerateInstanceFromTemplate(self.reversed_panel_schedule_template_dict[self.selected_value_first])
+                
+                print("Template 1", panel_schedule_views_list_of_template_1)
+                print("Template 2", panel_schedule_views_list_of_template_2)
+
+            except Exception as error:
+                print("ERROR: ", error)
+                t.Commit()
+                self.Close()
+                closed = True
+                        # print("Match")
+            if not closed:
+                t.Commit()
+                self.Close()
 
 
 
