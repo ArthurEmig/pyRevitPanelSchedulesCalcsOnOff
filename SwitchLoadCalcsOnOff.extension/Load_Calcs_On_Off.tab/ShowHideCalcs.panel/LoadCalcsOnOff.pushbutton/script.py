@@ -49,6 +49,12 @@ class FamilySelectionWindow(Windows.Window):
     def populate_combo_box_family_types(self, doc):
         all_MEP_family_types = filtered_collector.OfClass(db.FamilySymbol).ToElements()
 
+        all_sheets = DB.FilteredElementCollector(doc).OfClass(db.ViewSheet).WhereElementIsNotElementType().ToElements()
+
+        # print(len(all_sheets), " sheets found")
+        # print("SAMPLE SHEET", all_sheets[0])
+
+
         elem_class_filter_panel_schedule_views = db.ElementClassFilter(db.Electrical.PanelScheduleView)
 
         elem_class_filter_panel_schedule_templates = db.ElementClassFilter(db.Electrical.PanelScheduleTemplate)
@@ -64,6 +70,10 @@ class FamilySelectionWindow(Windows.Window):
 
         panel_schedule_template_list = []
 
+        sheets_dict = {sheet_item.Id:sheet_item.Name for sheet_item in all_sheets}
+
+        self.reversed_sheets_dict = {value:key for (key,value) in sheets_dict.items()}
+
         # iterate over panel schedule views and extract panel schedule templates
         for panel_schedule_view in all_panel_schedule_views:
             panel_schedule_template = panel_schedule_view.GetTemplate()
@@ -76,7 +86,7 @@ class FamilySelectionWindow(Windows.Window):
 
         self.reversed_panel_schedule_template_dict = {value:key for (key, value) in panel_schedule_template_dict.items()}
 
-        print("REVERSED DICT:", self.reversed_panel_schedule_template_dict)
+        # print("REVERSED DICT:", self.reversed_panel_schedule_template_dict)
 
         quantity_MEP_Elements = len(all_MEP_family_types)
 
@@ -94,6 +104,11 @@ class FamilySelectionWindow(Windows.Window):
             combobox_item_second = ComboBoxItem()
             combobox_item_second.Content = panel_schedule_template_dict[template_item_id]
             self.combo_second_panel_schedule_template.Items.Add(combobox_item_second)
+
+        for sheet_item in all_sheets:
+            combobox_item_third = ComboBoxItem()
+            combobox_item_third.Content = sheet_item.Name
+            self.combo_sheet_selection_1.Items.Add(combobox_item_third)
         
     def comboBoxFirstPanelScheduleTemplate_SelectionChanged(self, sender, e):
         selected_item = self.combo_first_panel_schedule_template.SelectedItem
@@ -114,7 +129,7 @@ class FamilySelectionWindow(Windows.Window):
     def comboBoxSheetSelection1_SelectionChanged(self, sender, e):
         selected_item = self.combo_sheet_selection_1.SelectedItem
         if selected_item:
-            self.selected_value_second = selected_item.Content
+            self.selected_sheet1 = selected_item.Content
             # print(self.selected_value)
         else:
             print("No Item Selected")
@@ -127,7 +142,11 @@ class FamilySelectionWindow(Windows.Window):
         panel_schedule_views_list_of_template_1 = []
         panel_schedule_views_list_of_template_2 = []
 
-        if True:
+        self.get_schedules([self.reversed_sheets_dict[self.selected_sheet1]])
+
+
+
+        if False:
 
             t = DB.Transaction(doc, "ChangePanelScheduleTemplatesLoadCalcsShowHide")
             t.Start()
@@ -158,6 +177,46 @@ class FamilySelectionWindow(Windows.Window):
             if not closed:
                 t.Commit()
                 self.Close()
+
+    def getViewsOnSheets(self, list_sheets_ids):
+
+        print(list_sheets_ids)
+
+        all_placed_view_ids = set()
+
+        for sheet_id in list_sheets_ids:
+            sheet = doc.GetElement(sheet_id)
+            all_placed_view_ids.update(sheet.GetAllPlacedViews())
+        
+        print(list(all_placed_view_ids), " Views on Selected Sheets")
+
+    def get_schedules(self, view_sheet_ids_list):
+
+        all_placed_views = []
+
+        for sheet_id in view_sheet_ids_list:
+
+            view_sheet = doc.GetElement(sheet_id)
+            view_doc = view_sheet.Document
+
+            collector = DB.FilteredElementCollector(view_doc, view_sheet.Id)
+
+            schedule_sheet_instances = collector.OfClass(db.Electrical.PanelScheduleSheetInstance).ToElements()
+
+            print(len(schedule_sheet_instances), " SHEET INSTANCES")
+
+            for schedule_sheet_instance in schedule_sheet_instances:
+                schedule_id = schedule_sheet_instance.ScheduleId
+
+                if schedule_id == db.ElementId.InvalidElementId:
+                    continue
+
+                view_schedule = doc.GetElement(schedule_id)
+
+                if isinstance(view_schedule, db.Electrical.PanelScheduleView):
+                    all_placed_views.append(view_schedule)
+        print(all_placed_views)
+
 
 
 
