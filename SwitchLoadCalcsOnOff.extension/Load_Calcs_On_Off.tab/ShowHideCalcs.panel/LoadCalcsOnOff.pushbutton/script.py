@@ -74,6 +74,8 @@ class FamilySelectionWindow(Windows.Window):
 
         self.reversed_sheets_dict = {value:key for (key,value) in sheets_dict.items()}
 
+        
+
         # iterate over panel schedule views and extract panel schedule templates
         for panel_schedule_view in all_panel_schedule_views:
             panel_schedule_template = panel_schedule_view.GetTemplate()
@@ -105,10 +107,17 @@ class FamilySelectionWindow(Windows.Window):
             combobox_item_second.Content = panel_schedule_template_dict[template_item_id]
             self.combo_second_panel_schedule_template.Items.Add(combobox_item_second)
 
+
+        # add option to ignore sheets
+        all_views_option = "All views"
+        combobox_item_all = ComboBoxItem()
+        combobox_item_all.Content = all_views_option
+        self.combo_sheet_selection_1.Items.Add(combobox_item_all)
         for sheet_item in all_sheets:
             combobox_item_third = ComboBoxItem()
             combobox_item_third.Content = sheet_item.Name
             self.combo_sheet_selection_1.Items.Add(combobox_item_third)
+        self.reversed_sheets_dict.update({all_views_option: None})
         
     def comboBoxFirstPanelScheduleTemplate_SelectionChanged(self, sender, e):
         selected_item = self.combo_first_panel_schedule_template.SelectedItem
@@ -194,7 +203,7 @@ class FamilySelectionWindow(Windows.Window):
 
         # idea form Jeremy Tammik
         # https://thebuildingcoder.typepad.com/blog/2013/02/retrieving-schedules-on-a-sheet.html
-        
+
 
         all_placed_views = []
 
