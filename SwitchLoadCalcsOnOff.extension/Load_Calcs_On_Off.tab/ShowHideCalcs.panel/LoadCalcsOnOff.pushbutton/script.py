@@ -38,6 +38,8 @@ class FamilySelectionWindow(Windows.Window):
         self.selected_value_first = None
         self.selected_value_second = None
         self.reversed_panel_schedule_template_dict = {}
+        self.selected_sheet1 = None
+        self.selected_sheet2 = None
 
     def btn_ok_clicked(self, sender, e):
         self.Close()
@@ -103,6 +105,14 @@ class FamilySelectionWindow(Windows.Window):
     
     def comboBoxSecondPanelScheduleTemplate_SelectionChanged(self, sender, e):
         selected_item = self.combo_second_panel_schedule_template.SelectedItem
+        if selected_item:
+            self.selected_value_second = selected_item.Content
+            # print(self.selected_value)
+        else:
+            print("No Item Selected")
+
+    def comboBoxSheetSelection1_SelectionChanged(self, sender, e):
+        selected_item = self.combo_sheet_selection_1.SelectedItem
         if selected_item:
             self.selected_value_second = selected_item.Content
             # print(self.selected_value)
