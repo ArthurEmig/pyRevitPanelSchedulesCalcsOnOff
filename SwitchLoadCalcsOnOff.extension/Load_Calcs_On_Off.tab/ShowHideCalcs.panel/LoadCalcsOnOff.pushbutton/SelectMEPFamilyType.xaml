@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="Select Operation" Height="300" Width="500">
+        Title="Select Operation" Height="300" Width="600">
     <Grid Margin="16,20,20,20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="43*"/>
@@ -18,13 +18,13 @@
             <RowDefinition  Height="2*"/>
         </Grid.RowDefinitions>
 
-        <Label x:Name="label_first_panel_schedule_template" Content="1st Panel Schedule Template" HorizontalAlignment="Left" VerticalAlignment="Center" Height="35" Width="130" Margin="8,0,0,0" Grid.Row="0"/>
+        <Label x:Name="label_first_panel_schedule_template" Content="1st Panel Schedule Template" HorizontalAlignment="Left" VerticalAlignment="Center" Height="35" Width="180" Margin="8,0,0,0" Grid.Row="0"/>
         <ComboBox SelectionChanged="comboBoxFirstPanelScheduleTemplate_SelectionChanged" x:Name="combo_first_panel_schedule_template" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" IsEditable="True" IsSynchronizedWithCurrentItem="True" Height="22" HorizontalAlignment="Left" Width="285" />
 
-        <Label x:Name="label_second_panel_schedule_template" Content="2nd Panel Schedule Template" HorizontalAlignment="Left" VerticalAlignment="Center" Height="35" Width="130" Grid.Row="1" Margin="8,0,0,0"/>
+        <Label x:Name="label_second_panel_schedule_template" Content="2nd Panel Schedule Template" HorizontalAlignment="Left" VerticalAlignment="Center" Height="35" Width="180" Grid.Row="1" Margin="8,0,0,0"/>
         <ComboBox SelectionChanged="comboBoxSecondPanelScheduleTemplate_SelectionChanged" x:Name="combo_second_panel_schedule_template" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" IsEditable="True" IsSynchronizedWithCurrentItem="True" Height="22" HorizontalAlignment="Left" Width="285" />
 
-        <Label x:Name="label_sheet_selection_1" Content="2nd Panel Schedule Template" HorizontalAlignment="Left" VerticalAlignment="Center" Height="35" Width="130" Grid.Row="2" Margin="8,0,0,0"/>
+        <Label x:Name="label_sheet_selection_1" Content="Sheet with Panel Schedules" HorizontalAlignment="Left" VerticalAlignment="Center" Height="35" Width="180" Grid.Row="2" Margin="8,0,0,0"/>
         <ComboBox SelectionChanged="comboBoxSheetSelection1_SelectionChanged" x:Name="combo_sheet_selection_1" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" IsEditable="True" IsSynchronizedWithCurrentItem="True" Height="22" HorizontalAlignment="Left" Width="285" />
 
         <Button x:Name="btn_ok" Click="btn_ok_clicked" HorizontalAlignment="Left" VerticalAlignment="Top" Content="OK" Padding="30,5,30,5" Margin="0,16,0,0" Grid.Column="1" Grid.Row="3" Height="28" Width="78" />
