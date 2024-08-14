@@ -194,6 +194,7 @@ class FamilySelectionWindow(Windows.Window):
 
 
         all_placed_views = []
+        all_placed_views_ids = []
 
         for sheet_id in view_sheet_ids_list:
 
@@ -216,7 +217,12 @@ class FamilySelectionWindow(Windows.Window):
 
                 if isinstance(view_schedule, db.Electrical.PanelScheduleView):
                     all_placed_views.append(view_schedule)
+                    all_placed_views_ids.append(view_schedule.Id)
         print(all_placed_views)
+
+
+
+        return all_placed_views, all_placed_views_ids
 
 
 
