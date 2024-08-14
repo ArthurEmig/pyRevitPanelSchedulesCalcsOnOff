@@ -40,6 +40,7 @@ class FamilySelectionWindow(Windows.Window):
         self.reversed_panel_schedule_template_dict = {}
         self.selected_sheet1 = None
         self.selected_sheet2 = None
+        self.all_views_option = "All views"
 
     def btn_ok_clicked(self, sender, e):
         self.Close()
@@ -109,15 +110,15 @@ class FamilySelectionWindow(Windows.Window):
 
 
         # add option to ignore sheets
-        all_views_option = "All views"
+        
         combobox_item_all = ComboBoxItem()
-        combobox_item_all.Content = all_views_option
+        combobox_item_all.Content = self.all_views_option
         self.combo_sheet_selection_1.Items.Add(combobox_item_all)
         for sheet_item in all_sheets:
             combobox_item_third = ComboBoxItem()
             combobox_item_third.Content = sheet_item.Name
             self.combo_sheet_selection_1.Items.Add(combobox_item_third)
-        self.reversed_sheets_dict.update({all_views_option: None})
+        self.reversed_sheets_dict.update({self.all_views_option: None})
         
     def comboBoxFirstPanelScheduleTemplate_SelectionChanged(self, sender, e):
         selected_item = self.combo_first_panel_schedule_template.SelectedItem
@@ -151,7 +152,13 @@ class FamilySelectionWindow(Windows.Window):
         panel_schedule_views_list_of_template_1 = []
         panel_schedule_views_list_of_template_2 = []
 
-        placed_views_ids = self.get_schedules([self.reversed_sheets_dict[self.selected_sheet1]])[1]
+        if self.selected_sheet1 == self.all_views_option:
+            placed_views_ids = None
+        else:
+            placed_views_ids = self.get_schedules([self.reversed_sheets_dict[self.selected_sheet1]])[1]
+
+        if placed_views_ids is not None:
+            all_panel_schedule_views = [view_item for view_item in all_panel_schedule_views if view_item.Id in placed_views_ids]
 
 
 
@@ -166,6 +173,7 @@ class FamilySelectionWindow(Windows.Window):
 
                 for schedule_view in all_panel_schedule_views:
 
+                    
                     template_of_schedule_view = doc.GetElement(schedule_view.GetTemplate())
                     if template_of_schedule_view.Name == self.selected_value_first:
                         panel_schedule_views_list_of_template_1.append(template_of_schedule_view)
@@ -192,7 +200,6 @@ class FamilySelectionWindow(Windows.Window):
 
         # idea form Jeremy Tammik
         # https://thebuildingcoder.typepad.com/blog/2013/02/retrieving-schedules-on-a-sheet.html
-
 
         all_placed_views = []
         all_placed_views_ids = []
