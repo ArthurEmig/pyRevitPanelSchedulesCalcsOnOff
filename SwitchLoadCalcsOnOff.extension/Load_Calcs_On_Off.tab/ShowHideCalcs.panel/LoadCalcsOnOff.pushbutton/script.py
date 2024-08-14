@@ -187,18 +187,6 @@ class FamilySelectionWindow(Windows.Window):
                 t.Commit()
                 self.Close()
 
-    def getViewsOnSheets(self, list_sheets_ids):
-
-        print(list_sheets_ids)
-
-        all_placed_view_ids = set()
-
-        for sheet_id in list_sheets_ids:
-            sheet = doc.GetElement(sheet_id)
-            all_placed_view_ids.update(sheet.GetAllPlacedViews())
-        
-        print(list(all_placed_view_ids), " Views on Selected Sheets")
-
     def get_schedules(self, view_sheet_ids_list):
 
         # idea form Jeremy Tammik
