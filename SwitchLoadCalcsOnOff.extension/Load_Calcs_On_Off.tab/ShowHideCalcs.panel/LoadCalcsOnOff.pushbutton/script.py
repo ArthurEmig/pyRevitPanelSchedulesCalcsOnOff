@@ -151,11 +151,11 @@ class FamilySelectionWindow(Windows.Window):
         panel_schedule_views_list_of_template_1 = []
         panel_schedule_views_list_of_template_2 = []
 
-        self.get_schedules([self.reversed_sheets_dict[self.selected_sheet1]])
+        placed_views_ids = self.get_schedules([self.reversed_sheets_dict[self.selected_sheet1]])[1]
 
 
 
-        if False:
+        if True:
 
             t = DB.Transaction(doc, "ChangePanelScheduleTemplatesLoadCalcsShowHide")
             t.Start()
@@ -165,6 +165,7 @@ class FamilySelectionWindow(Windows.Window):
             try: 
 
                 for schedule_view in all_panel_schedule_views:
+
                     template_of_schedule_view = doc.GetElement(schedule_view.GetTemplate())
                     if template_of_schedule_view.Name == self.selected_value_first:
                         panel_schedule_views_list_of_template_1.append(template_of_schedule_view)
