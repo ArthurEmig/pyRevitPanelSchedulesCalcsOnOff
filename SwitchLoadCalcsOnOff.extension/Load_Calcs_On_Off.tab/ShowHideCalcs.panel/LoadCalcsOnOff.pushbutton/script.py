@@ -182,10 +182,12 @@ class FamilySelectionWindow(Windows.Window):
                     if template_of_schedule_view.Name == self.selected_value_first:
                         panel_schedule_views_list_of_template_1.append(template_of_schedule_view)
                         schedule_view.GenerateInstanceFromTemplate(self.reversed_panel_schedule_template_dict[self.selected_value_second])
-                        continue
-                    if template_of_schedule_view.Name == self.selected_value_second:
-                        panel_schedule_views_list_of_template_2.append(template_of_schedule_view)
-                        schedule_view.GenerateInstanceFromTemplate(self.reversed_panel_schedule_template_dict[self.selected_value_first])
+
+                        ## commented out to switch from first template to the second only and not from the second to the first - AE
+                    #     continue
+                    # if template_of_schedule_view.Name == self.selected_value_second:
+                    #     panel_schedule_views_list_of_template_2.append(template_of_schedule_view)
+                    #     schedule_view.GenerateInstanceFromTemplate(self.reversed_panel_schedule_template_dict[self.selected_value_first])
                 
                 print("Template 1", panel_schedule_views_list_of_template_1)
                 print("Template 2", panel_schedule_views_list_of_template_2)
