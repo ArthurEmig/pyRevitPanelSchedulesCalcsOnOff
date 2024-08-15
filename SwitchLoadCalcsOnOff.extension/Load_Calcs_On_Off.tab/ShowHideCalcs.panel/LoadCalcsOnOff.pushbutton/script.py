@@ -204,7 +204,7 @@ class FamilySelectionWindow(Windows.Window):
 
     def get_schedules(self, view_sheet_ids_list):
 
-        # idea form Jeremy Tammik
+        # idea from Jeremy Tammik
         # https://thebuildingcoder.typepad.com/blog/2013/02/retrieving-schedules-on-a-sheet.html
 
         all_placed_views = []
