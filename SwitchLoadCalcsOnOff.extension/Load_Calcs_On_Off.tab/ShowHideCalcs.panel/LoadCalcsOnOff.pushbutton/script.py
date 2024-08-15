@@ -29,6 +29,10 @@ def isMEPInstanceInSpace(MEPInstance_elem, space_elem):
 
     return mep_instance_space_id == space_id
 
+def composeSheetNumberName(sheet_item):
+
+    return sheet_item.SheetNumber + "_" + sheet_item.Name
+
 
 
 class FamilySelectionWindow(Windows.Window):
@@ -71,7 +75,7 @@ class FamilySelectionWindow(Windows.Window):
 
         panel_schedule_template_list = []
 
-        sheets_dict = {sheet_item.Id:sheet_item.Name for sheet_item in all_sheets}
+        sheets_dict = {sheet_item.Id:composeSheetNumberName(sheet_item) for sheet_item in all_sheets}
 
         self.reversed_sheets_dict = {value:key for (key,value) in sheets_dict.items()}
 
@@ -116,7 +120,7 @@ class FamilySelectionWindow(Windows.Window):
         self.combo_sheet_selection_1.Items.Add(combobox_item_all)
         for sheet_item in all_sheets:
             combobox_item_third = ComboBoxItem()
-            combobox_item_third.Content = sheet_item.Name
+            combobox_item_third.Content = composeSheetNumberName(sheet_item=sheet_item)
             self.combo_sheet_selection_1.Items.Add(combobox_item_third)
         self.reversed_sheets_dict.update({self.all_views_option: None})
         
